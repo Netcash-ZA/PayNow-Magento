@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<!-- 
+config.xml
+-->
+<config>
+	<modules>
+		<PayNow_PayNow>
+			<version>0.1.0</version>
+		</PayNow_PayNow>
+	</modules>
+	<global>
+		<blocks>
+			<paynow>
+				<class>PayNow_PayNow_Block</class>
+			</paynow>
+		</blocks>
+		<helpers>
+			<paynow>
+				<class>PayNow_PayNow_Helper</class>
+			</paynow>
+		</helpers>
+		<models>
+			<paynow>
+				<class>PayNow_PayNow_Model</class>
+			</paynow>
+		</models>
+		<resources>
+			<paynow_setup>
+				<setup>
+					<module>PayNow_PayNow</module>
+				</setup>
+				<connection>
+					<use>core_setup</use>
+				</connection>
+			</paynow_setup>
+			<newmodule_write>
+				<connection>
+					<use>core_write</use>
+				</connection>
+			</newmodule_write>
+			<newmodule_read>
+				<connection>
+					<use>core_read</use>
+				</connection>
+			</newmodule_read>
+		</resources>
+    </global>
+	
+	<frontend>
+		<routers>
+			<paynow> 
+				<use>standard</use>
+				<args>
+					<module>PayNow_PayNow</module>
+					<frontName>paynow</frontName>
+				</args>
+			</paynow>
+		</routers>
+	</frontend>
+ 
+	<default>
+		<payment>
+			<paynow>
+				<model>paynow/standard</model>
+				<active>0</active>
+				<title><![CDATA[PayNow]]></title>
+				<server>test</server>
+				<debugging>0</debugging>
+			</paynow>
+		</payment>
+	</default>
+</config>
