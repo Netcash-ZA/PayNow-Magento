@@ -14,7 +14,7 @@ class Mage_Paypal_Model_Ipn
 	public function getWriteLog( $data )
     {
 		$text = "\n";
-		$text .= "RESPONSE: From Pay Now[". date("Y-m-d H:i:s") ."]"."\n";
+		$text .= "RESPONSE: From Sage Pay Now[". date("Y-m-d H:i:s") ."]"."\n";
 		
         foreach( $_REQUEST as $key => $val )
 			$text .= $key."=>".$val."\n";

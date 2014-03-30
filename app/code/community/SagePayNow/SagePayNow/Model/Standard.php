@@ -4,13 +4,13 @@
  */
 
 /**
- * PayNow_PayNow_Model_Standard
+ * SagePayNow_SagePayNow_Model_Standard
  */
-class PayNow_PayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
+class SagePayNow_SagePayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
 {
-	protected $_code = 'paynow';
-	protected $_formBlockType = 'paynow/form';
-	protected $_infoBlockType = 'paynow/payment_info';
+	protected $_code = 'sagepaynow';
+	protected $_formBlockType = 'sagepaynow/form';
+	protected $_infoBlockType = 'sagepaynow/payment_info';
 	protected $_order;
 	
 	protected $_isGateway              = true;
@@ -45,7 +45,7 @@ class PayNow_PayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
      */
 	public function getConfig()
     {
-        return Mage::getSingleton( 'paynow/config' );
+        return Mage::getSingleton( 'sagepaynow/config' );
     }
 
     /**
@@ -53,7 +53,7 @@ class PayNow_PayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
      */
 	public function getOrderPlaceRedirectUrl()
 	{
-		return Mage::getUrl( 'paynow/redirect/redirect', array( '_secure' => true ) );
+		return Mage::getUrl( 'sagepaynow/redirect/redirect', array( '_secure' => true ) );
 	}
     // }}}
     // {{{ getPaidSuccessUrl()
@@ -62,7 +62,7 @@ class PayNow_PayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
      */
 	public function getPaidSuccessUrl()
 	{
-		return Mage::getUrl( 'paynow/redirect/success', array( '_secure' => true ) );
+		return Mage::getUrl( 'sagepaynow/redirect/success', array( '_secure' => true ) );
 	}
 
     /**
@@ -70,7 +70,7 @@ class PayNow_PayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
      */
 	public function getPaidCancelUrl()
 	{
-		return Mage::getUrl( 'paynow/redirect/cancel', array( '_secure' => true ) );
+		return Mage::getUrl( 'sagepaynow/redirect/cancel', array( '_secure' => true ) );
 	}
 
     /**
@@ -78,7 +78,7 @@ class PayNow_PayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
      */
 	public function getPaidNotifyUrl()
 	{
-		return Mage::getUrl( 'paynow/notify', array( '_secure' => true ) );
+		return Mage::getUrl( 'sagepaynow/notify', array( '_secure' => true ) );
 	}
 
     /**
@@ -129,18 +129,10 @@ class PayNow_PayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
         $order = Mage::getModel( 'sales/order' )->loadByIncrementId( $orderIncrementId );
 		$description = '';
 		
-        // If NOT test mode, use normal credentials
-        if( $this->getConfigData( 'server' ) == 'live' )
-        {
-            $merchantId = $this->getConfigData( 'merchant_id' );
-            $merchantKey = $this->getConfigData( 'merchant_key' );
-        }
-        // If test mode, use generic sandbox credentials
-        else
-        {
-            $merchantId = '10000100';
-            $merchantKey = '46f0cd694581a';
-        }
+		// Sage Pay Now service key
+        $serviceKey = $this->getConfigData( 'service_key' );
+        // Sage Pay Now software vendor key
+        $softwareVendorKey = '24ade73c-98cf-47b3-99be-cc7b867b3080';
         
         // Create description
         foreach( $order->getAllItems() as $items )
@@ -158,26 +150,24 @@ class PayNow_PayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
         // Construct data for the form
 		$data = array(
             // Merchant details
-            'merchant_id' => $merchantId,
-			'merchant_key' => $merchantKey,
+            
+			'm1' => $serviceKey,
+			'm2' => $softwareVendorKey,
 			'return_url' => $this->getPaidSuccessUrl(),
 			'cancel_url' => $this->getPaidCancelUrl(),
 			'notify_url' => $this->getPaidNotifyUrl(),
 			
             // Buyer details
-			'name_first' => $order->getData( 'customer_firstname' ),
-			'name_last' => $order->getData( 'customer_lastname' ),
-			'email_address' => $order->getData( 'customer_email' ),
+			// M9 = cardholder
+			'm9' => $order->getData( 'customer_email' ),
             
             // Item details
-			'item_name' => $this->getStoreName().', Order #'.$this->getRealOrderId(),
-			'item_description' => $description,
-			'amount' => $this->getTotalAmount( $order ),
-			'm_payment_id' => $this->getRealOrderId(),
-            'currency_code'  => $order->getOrderCurrencyCode(),
-
-            // Other
-            'user_agent' => PN_USER_AGENT,
+            // P3 = description
+			'p3' => $this->getStoreName().', Order #'.$this->getRealOrderId(),			
+			'p4' => $this->getTotalAmount( $order ),
+			// p2 = unique ref
+			'p2' => $this->getRealOrderId()            
+            
         );
         
 		return( $data );
@@ -197,11 +187,11 @@ class PayNow_PayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
     /**
      * getPayNowUrl
      * 
-     * Get URL for form submission to Pay Now.
+     * Get URL for form submission to Sage Pay Now.
      */
 	public function getPayNowUrl()
     {
-		$url = 'https://www.paynow.co.za.url';        
+		$url = 'https://paynow.sagepay.co.za/site/paynow.aspx';        
 		return( $url );
     }
 

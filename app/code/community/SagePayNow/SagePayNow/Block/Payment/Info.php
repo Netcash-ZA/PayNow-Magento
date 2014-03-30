@@ -4,9 +4,9 @@
  */
  
 /**
- * PayNow_PayNow_Block_Payment_Info 
+ * SagePayNow_SagePayNow_Block_Payment_Info 
  */
-class PayNow_PayNow_Block_Payment_Info extends Mage_Payment_Block_Info
+class SagePayNow_SagePayNow_Block_Payment_Info extends Mage_Payment_Block_Info
 {    
     /**
      * _prepareSpecificInformation 
@@ -15,7 +15,7 @@ class PayNow_PayNow_Block_Payment_Info extends Mage_Payment_Block_Info
     {
         $transport = parent::_prepareSpecificInformation( $transport );
         $payment = $this->getInfo();
-        $pfInfo = Mage::getModel( 'paynow/info' );
+        $pfInfo = Mage::getModel( 'sagepaynow/info' );
         
         if( !$this->getIsSecureMode() )
             $info = $pfInfo->getPaymentInfo( $payment, true );

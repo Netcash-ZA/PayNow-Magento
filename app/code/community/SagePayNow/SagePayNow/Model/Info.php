@@ -4,9 +4,9 @@
  */
 
 /**
- * PayNow_PayNow_Model_Info
+ * SagePayNow_SagePayNow_Model_Info
  */
-class PayNow_PayNow_Model_Info
+class SagePayNow_SagePayNow_Model_Info
 {
     /**
      * Cross-models public exchange keys
@@ -162,13 +162,13 @@ class PayNow_PayNow_Model_Info
         switch( $key )
         {
             case 'payment_status':
-                $label = Mage::helper( 'paynow' )->__( 'Payment Status' ); break;
+                $label = Mage::helper( 'sagepaynow' )->__( 'Payment Status' ); break;
             case 'm_payment_id':
-                $label = Mage::helper( 'paynow' )->__( 'Payment ID' ); break;
+                $label = Mage::helper( 'sagepaynow' )->__( 'Payment ID' ); break;
             case 'pn_payment_id':
-                $label = Mage::helper( 'paynow' )->__( 'PayNow Payment ID' ); break;
+                $label = Mage::helper( 'sagepaynow' )->__( 'Sage Pay Now Payment ID' ); break;
             case 'email_address':
-                $label = Mage::helper( 'paynow' )->__( 'Email Address' ); break;
+                $label = Mage::helper( 'sagepaynow' )->__( 'Email Address' ); break;
             default:
                 $label = ''; break;
         }

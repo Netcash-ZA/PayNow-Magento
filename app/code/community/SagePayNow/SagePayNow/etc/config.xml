@@ -4,35 +4,35 @@ config.xml
 -->
 <config>
 	<modules>
-		<PayNow_PayNow>
+		<SagePayNow_SagePayNow>
 			<version>0.1.0</version>
-		</PayNow_PayNow>
+		</SagePayNow_SagePayNow>
 	</modules>
 	<global>
 		<blocks>
-			<paynow>
-				<class>PayNow_PayNow_Block</class>
-			</paynow>
+			<sagepaynow>
+				<class>SagePayNow_SagePayNow_Block</class>
+			</sagepaynow>
 		</blocks>
 		<helpers>
-			<paynow>
-				<class>PayNow_PayNow_Helper</class>
-			</paynow>
+			<sagepaynow>
+				<class>SagePayNow_SagePayNow_Helper</class>
+			</sagepaynow>
 		</helpers>
 		<models>
-			<paynow>
-				<class>PayNow_PayNow_Model</class>
-			</paynow>
+			<sagepaynow>
+				<class>SagePayNow_SagePayNow_Model</class>
+			</sagepaynow>
 		</models>
 		<resources>
-			<paynow_setup>
+			<sagepaynow_setup>
 				<setup>
-					<module>PayNow_PayNow</module>
+					<module>SagePayNow_SagePayNow</module>
 				</setup>
 				<connection>
 					<use>core_setup</use>
 				</connection>
-			</paynow_setup>
+			</sagepaynow_setup>
 			<newmodule_write>
 				<connection>
 					<use>core_write</use>
@@ -48,25 +48,25 @@ config.xml
 	
 	<frontend>
 		<routers>
-			<paynow> 
+			<sagepaynow> 
 				<use>standard</use>
 				<args>
-					<module>PayNow_PayNow</module>
-					<frontName>paynow</frontName>
+					<module>SagePayNow_SagePayNow</module>
+					<frontName>sagepaynow</frontName>
 				</args>
-			</paynow>
+			</sagepaynow>
 		</routers>
 	</frontend>
  
 	<default>
 		<payment>
-			<paynow>
-				<model>paynow/standard</model>
+			<sagepaynow>
+				<model>sagepaynow/standard</model>
 				<active>0</active>
-				<title><![CDATA[PayNow]]></title>
+				<title><![CDATA[SagePayNow]]></title>
 				<server>test</server>
 				<debugging>0</debugging>
-			</paynow>
+			</sagepaynow>
 		</payment>
 	</default>
 </config>

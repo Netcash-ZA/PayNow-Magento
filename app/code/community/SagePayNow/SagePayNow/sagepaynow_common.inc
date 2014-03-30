@@ -7,7 +7,7 @@
 // User agent constituents (for cURL)
 define( 'PN_SOFTWARE_NAME', 'Magento' );
 define( 'PN_SOFTWARE_VER', Mage::getVersion() );
-define( 'PN_MODULE_NAME', 'PayNow-Magento' );
+define( 'PN_MODULE_NAME', 'SagePayNow-Magento' );
 define( 'PN_MODULE_VER', '1.1' );
 
 // Features
@@ -39,7 +39,7 @@ define( 'PN_ERR_BAD_SOURCE_IP', 'Bad source IP address' );
 define( 'PN_ERR_CONNECT_FAILED', 'Failed to connect to Pay Now' );
 define( 'PN_ERR_INVALID_SIGNATURE', 'Security signature mismatch' );
 define( 'PN_ERR_MERCHANT_ID_MISMATCH', 'Merchant ID mismatch' );
-define( 'PN_ERR_NO_SESSION', 'No saved session found for ITN transaction' );
+define( 'PN_ERR_NO_SESSION', 'No saved session found for IPN transaction' );
 define( 'PN_ERR_ORDER_ID_MISSING_URL', 'Order ID not present in URL' );
 define( 'PN_ERR_ORDER_ID_MISMATCH', 'Order ID mismatch' );
 define( 'PN_ERR_ORDER_INVALID', 'This order ID is invalid' );
@@ -63,7 +63,6 @@ define( 'PN_MSG_PENDING',
  *
  * Log function for logging output.
  *
- * @author Jonathan Smit
  * @param $msg String Message to log
  * @param $close Boolean Whether to close the log file or not
  */
@@ -85,7 +84,7 @@ function pnlog( $msg = '', $close = false )
             if( !$fh )
             {
                 $pathinfo = pathinfo( __FILE__ );
-                $fh = fopen( $pathinfo['dirname'] .'/paynow.log', 'a+' );
+                $fh = fopen( $pathinfo['dirname'] .'/sagepaynow.log', 'a+' );
             }
 
             // If file was successfully created

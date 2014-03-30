@@ -4,13 +4,13 @@
  */
 
 // Include the PayFast common file
-define( 'PN_DEBUG', ( Mage::getStoreConfig( 'payment/paynow/debugging' ) ? true : false ) );
-include_once( dirname( __FILE__ ) .'/../paynow_common.inc' );
+define( 'PN_DEBUG', ( Mage::getStoreConfig( 'payment/sagepaynow/debugging' ) ? true : false ) );
+include_once( dirname( __FILE__ ) .'/../sagepaynow_common.inc' );
  
 /**
- * PayNow_PayNow_RedirectController
+ * SagePayNow_SagePayNow_RedirectController
  */
-class PayNow_PayNow_RedirectController extends Mage_Core_Controller_Front_Action
+class SagePayNow_SagePayNow_RedirectController extends Mage_Core_Controller_Front_Action
 {
     protected $_order;
 	protected $_WHAT_STATUS = false;
@@ -103,7 +103,7 @@ class PayNow_PayNow_RedirectController extends Mage_Core_Controller_Front_Action
                 $order->setState(
                     Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
                     $this->_getPendingPaymentStatus(),
-                    Mage::helper( 'paynow' )->__( 'Customer was redirected to Pay Now.' )
+                    Mage::helper( 'sagepaynow' )->__( 'Customer was redirected to Sage Pay Now.' )
                 )->save();
             }
 
@@ -116,7 +116,7 @@ class PayNow_PayNow_RedirectController extends Mage_Core_Controller_Front_Action
                 $session->clear();
             }
 			
-			$this->getResponse()->setBody( $this->getLayout()->createBlock( 'paynow/request' )->toHtml() );
+			$this->getResponse()->setBody( $this->getLayout()->createBlock( 'sagepaynow/request' )->toHtml() );
 	        $session->unsQuoteId();
             
             return;
@@ -136,8 +136,8 @@ class PayNow_PayNow_RedirectController extends Mage_Core_Controller_Front_Action
     /**
      * cancelAction
      * 
-     * Action for when a user cancel's a payment on Pay Now.
-     * @TODO Cancel Action does not exist on Pay Now, remove
+     * Action for when a user cancel's a payment on Sage Pay Now.
+     * @TODO Cancel Action does not exist on Sage Pay Now, remove
      */
     public function cancelAction()
     {
