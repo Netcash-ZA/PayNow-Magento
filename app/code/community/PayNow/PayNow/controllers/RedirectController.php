@@ -4,13 +4,13 @@
  */
 
 // Include the PayFast common file
-define( 'PN_DEBUG', ( Mage::getStoreConfig( 'payment/sagepaynow/debugging' ) ? true : false ) );
-include_once( dirname( __FILE__ ) .'/../sagepaynow_common.inc' );
+define( 'PN_DEBUG', ( Mage::getStoreConfig( 'payment/paynow/debugging' ) ? true : false ) );
+include_once( dirname( __FILE__ ) .'/../paynow_common.inc' );
  
 /**
- * SagePayNow_SagePayNow_RedirectController
+ * PayNow_PayNow_RedirectController
  */
-class SagePayNow_SagePayNow_RedirectController extends Mage_Core_Controller_Front_Action
+class PayNow_PayNow_RedirectController extends Mage_Core_Controller_Front_Action
 {
     protected $_order;
 	protected $_WHAT_STATUS = false;
@@ -86,10 +86,11 @@ class SagePayNow_SagePayNow_RedirectController extends Mage_Core_Controller_Fron
      */
     public function redirectAction()
     {
-        pnlog( 'Redirecting to Pay Now' );
+        pnlog( 'Redirecting to Sage Pay Now in app/code/community/PayNow/PayNow/controllers/RedirectController.php' );
         
 		try
         {
+        	pnlog('Trying to get session checkout/session...');
             $session = Mage::getSingleton( 'checkout/session' );
 
             $order = Mage::getModel( 'sales/order' );
@@ -103,7 +104,7 @@ class SagePayNow_SagePayNow_RedirectController extends Mage_Core_Controller_Fron
                 $order->setState(
                     Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
                     $this->_getPendingPaymentStatus(),
-                    Mage::helper( 'sagepaynow' )->__( 'Customer was redirected to Sage Pay Now.' )
+                    Mage::helper( 'paynow' )->__( 'Customer was redirected to Sage Pay Now.' )
                 )->save();
             }
 
@@ -116,20 +117,22 @@ class SagePayNow_SagePayNow_RedirectController extends Mage_Core_Controller_Fron
                 $session->clear();
             }
 			
-			$this->getResponse()->setBody( $this->getLayout()->createBlock( 'sagepaynow/request' )->toHtml() );
+			$this->getResponse()->setBody( $this->getLayout()->createBlock( 'paynow/request' )->toHtml() );
 	        $session->unsQuoteId();
-            
+	        pnlog('Done! Return to next...');
             return;
         }
         catch( Mage_Core_Exception $e )
         {
-            $this->_getCheckout()->addError( $e->getMessage() );
+            pnlog('Madge_Core_Exception');
+        	$this->_getCheckout()->addError( $e->getMessage() );
         }
         catch( Exception $e )
         {
+        	pnlog('Exception');
             Mage::logException($e);
         }
-        
+        pnlog('Initiating redirect checkout/cart...');
         $this->_redirect( 'checkout/cart' );
     }
    

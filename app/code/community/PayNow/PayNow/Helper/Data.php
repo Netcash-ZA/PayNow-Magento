@@ -4,9 +4,9 @@
  */
 
 /**
- * SagePayNow_SagePayNow_Helper_Data
+ * PayNow_PayNow_Helper_Data
  */
-class SagePayNow_SagePayNow_Helper_Data extends Mage_Payment_Helper_Data
+class PayNow_PayNow_Helper_Data extends Mage_Payment_Helper_Data
 {    
     /**
      * getPendingPaymentStatus

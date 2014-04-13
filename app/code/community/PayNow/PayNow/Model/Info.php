@@ -4,9 +4,9 @@
  */
 
 /**
- * SagePayNow_SagePayNow_Model_Info
+ * PayNow_PayNow_Model_Info
  */
-class SagePayNow_SagePayNow_Model_Info
+class PayNow_PayNow_Model_Info
 {
     /**
      * Cross-models public exchange keys
@@ -46,8 +46,6 @@ class SagePayNow_SagePayNow_Model_Info
      */
     protected $_paymentMapFull = array();
 
-
-    // {{{ getPaymentInfo()
     /**
      * getPaymentInfo
      */	
@@ -58,8 +56,7 @@ class SagePayNow_SagePayNow_Model_Info
 
         return( $result );
     }
-    // }}}
-	// {{{ getPublicPaymentInfo
+
     /**
      * getPublicPaymentInfo
      */
@@ -67,8 +64,7 @@ class SagePayNow_SagePayNow_Model_Info
     {
         return $this->_getFullInfo( $this->_paymentPublicMap, $payment, $labelValuesOnly );
     }
-    // }}}
-    // {{{
+
     /**
      * Grab data from source and map it into payment
      *
@@ -79,8 +75,7 @@ class SagePayNow_SagePayNow_Model_Info
     {
         Varien_Object_Mapper::accumulateByMap( $from, array($payment, 'setAdditionalInformation'), $this->_paymentMap );
     }
-    // }}}
-    // {{{ exportFromPayment()
+
     /**
      * exportFromPayment
      * 
@@ -144,8 +139,7 @@ class SagePayNow_SagePayNow_Model_Info
         
         return( $result );
     }
-    // }}}
-	// {{{ _getLabel()
+
     /**
      * _getLabel
      * 
@@ -162,13 +156,13 @@ class SagePayNow_SagePayNow_Model_Info
         switch( $key )
         {
             case 'payment_status':
-                $label = Mage::helper( 'sagepaynow' )->__( 'Payment Status' ); break;
+                $label = Mage::helper( 'paynow' )->__( 'Payment Status' ); break;
             case 'm_payment_id':
-                $label = Mage::helper( 'sagepaynow' )->__( 'Payment ID' ); break;
+                $label = Mage::helper( 'paynow' )->__( 'Payment ID' ); break;
             case 'pn_payment_id':
-                $label = Mage::helper( 'sagepaynow' )->__( 'Sage Pay Now Payment ID' ); break;
+                $label = Mage::helper( 'paynow' )->__( 'Sage Pay Now Payment ID' ); break;
             case 'email_address':
-                $label = Mage::helper( 'sagepaynow' )->__( 'Email Address' ); break;
+                $label = Mage::helper( 'paynow' )->__( 'Email Address' ); break;
             default:
                 $label = ''; break;
         }

@@ -4,13 +4,13 @@
  */
 
 /**
- * SagePayNow_SagePayNow_Model_Standard
+ * PayNow_PayNow_Model_Standard
  */
-class SagePayNow_SagePayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
+class PayNow_PayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
 {
-	protected $_code = 'sagepaynow';
-	protected $_formBlockType = 'sagepaynow/form';
-	protected $_infoBlockType = 'sagepaynow/payment_info';
+	protected $_code = 'paynow';
+	protected $_formBlockType = 'paynow/form';
+	protected $_infoBlockType = 'paynow/payment_info';
 	protected $_order;
 	
 	protected $_isGateway              = true;
@@ -45,7 +45,7 @@ class SagePayNow_SagePayNow_Model_Standard extends Mage_Payment_Model_Method_Abs
      */
 	public function getConfig()
     {
-        return Mage::getSingleton( 'sagepaynow/config' );
+        return Mage::getSingleton( 'paynow/config' );
     }
 
     /**
@@ -53,16 +53,15 @@ class SagePayNow_SagePayNow_Model_Standard extends Mage_Payment_Model_Method_Abs
      */
 	public function getOrderPlaceRedirectUrl()
 	{
-		return Mage::getUrl( 'sagepaynow/redirect/redirect', array( '_secure' => true ) );
+		return Mage::getUrl( 'paynow/redirect/redirect', array( '_secure' => true ) );
 	}
-    // }}}
-    // {{{ getPaidSuccessUrl()
+
     /**
      * getPaidSuccessUrl
      */
 	public function getPaidSuccessUrl()
 	{
-		return Mage::getUrl( 'sagepaynow/redirect/success', array( '_secure' => true ) );
+		return Mage::getUrl( 'paynow/redirect/success', array( '_secure' => true ) );
 	}
 
     /**
@@ -70,7 +69,7 @@ class SagePayNow_SagePayNow_Model_Standard extends Mage_Payment_Model_Method_Abs
      */
 	public function getPaidCancelUrl()
 	{
-		return Mage::getUrl( 'sagepaynow/redirect/cancel', array( '_secure' => true ) );
+		return Mage::getUrl( 'paynow/redirect/cancel', array( '_secure' => true ) );
 	}
 
     /**
@@ -78,7 +77,7 @@ class SagePayNow_SagePayNow_Model_Standard extends Mage_Payment_Model_Method_Abs
      */
 	public function getPaidNotifyUrl()
 	{
-		return Mage::getUrl( 'sagepaynow/notify', array( '_secure' => true ) );
+		return Mage::getUrl( 'paynow/notify', array( '_secure' => true ) );
 	}
 
     /**
@@ -169,7 +168,7 @@ class SagePayNow_SagePayNow_Model_Standard extends Mage_Payment_Model_Method_Abs
 			'p2' => $this->getRealOrderId()            
             
         );
-        
+        pnlog ('Standard.php/getStandardCheckoutFormFields: ' . print_r($data,true));
 		return( $data );
 	}
 

@@ -3,7 +3,7 @@
  * NotifyController.php
  */
 
-// Include the PayFast common file
+// Include the Sage Pay Now common file
 define( 'PN_DEBUG', ( Mage::getStoreConfig( 'payment/paynow/debugging' ) ? true : false ) );
 include_once( dirname( __FILE__ ) .'/../paynow_common.inc' );
 
@@ -17,7 +17,7 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
 	/**
 	 * indexAction
      * 
-     * Instantiate ITN model and pass ITN request to it
+     * Instantiate IPN model and pass IPN request to it
 	 */
     public function indexAction()
     {
@@ -29,7 +29,7 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
         $pnOrderId = '';
         $pnParamString = '';
         
-        pnlog( 'Pay Now IPN call received' );
+        pnlog( 'Sage Pay Now IPN call received' );
         pnlog( 'Server = '. Mage::getStoreConfig( 'payment/paynow/server' ) );
         
         //// Notify PayFast that information has been received
@@ -47,7 +47,7 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
             // Posted variables from ITN
             $pnData = pnGetData();
         
-            pnlog( 'PayFast Data: '. print_r( $pnData, true ) );
+            pnlog( 'Sage Pay Now Data: '. print_r( $pnData, true ) );
         
             if( $pnData === false )
             {
@@ -56,30 +56,11 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
             }
         }
         
-        //// Verify security signature
-        if( !$pnError )
-        {
-            pnlog( 'Verify security signature' );
-        
-            // If signature different, log for debugging
-            if( !pnValidSignature( $pnData, $pnParamString ) )
-            {
-                $pnError = true;
-                $pnErrMsg = PF_ERR_INVALID_SIGNATURE;
-            }
-        }
-        
-        //// Verify source IP (If not in debug mode)
-        if( !$pnError && !defined( 'PN_DEBUG' ) )
-        {
-            pnlog( 'Verify source IP' );
-        
-            if( !pnValidIP( $_SERVER['REMOTE_ADDR'] ) )
-            {
-                $pnError = true;
-                $pnErrMsg = PF_ERR_BAD_SOURCE_IP;
-            }
-        }
+		if ($pnData['TransactionAccepted'] == 'false') {
+			$pnError = true;
+			// TODO PN_DECLINED does not exist
+			//$pnErrMsg = PN_DECLINED			
+		}
         
         //// Get internal order and verify it hasn't already been processed
         if( !$pnError )
@@ -87,7 +68,7 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
             pnlog( "Check order hasn't been processed" );
             
             // Load order
-    		$trnsOrdId = $pnData['m_payment_id'];
+    		$trnsOrdId = $pnData['Reference'];
     		$order = Mage::getModel( 'sales/order' );
             $order->loadByIncrementId( $trnsOrdId );
     		$this->_storeID = $order->getStoreId();
@@ -100,19 +81,19 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
             }
         }
         
-        //// Verify data received
-        if( !$pnError )
-        {
-            pnlog( 'Verify data received' );
+//         //// Verify data received
+//         if( !$pnError )
+//         {
+//             pnlog( 'Verify data received' );
         
-            $pnValid = pnValidData( $pnHost, $pnParamString );
+//             $pnValid = pnValidData( $pnHost, $pnParamString );
         
-            if( !$pnValid )
-            {
-                $pnError = true;
-                $pnErrMsg = PN_ERR_BAD_ACCESS;
-            }
-        }
+//             if( !$pnValid )
+//             {
+//                 $pnError = true;
+//                 $pnErrMsg = PN_ERR_BAD_ACCESS;
+//             }
+//         }
 
         //// Check status and update order
         if( !$pnError )
@@ -120,17 +101,17 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
             pnlog( 'Check status and update order' );
             
             // Successful
-            if( $pnData['payment_status'] == "COMPLETE" )
+            if( $pnData['TransactionAccepted'] == "true" )
             {
                 pnlog( 'Order complete' );
                 
                 // Update order additional payment information
                 $payment = $order->getPayment(); 
-        		$payment->setAdditionalInformation( "payment_status", $pnData['payment_status'] );
-        		$payment->setAdditionalInformation( "m_payment_id", $pnData['m_payment_id'] );
-                $payment->setAdditionalInformation( "pn_payment_id", $pnData['pn_payment_id'] );
+        		$payment->setAdditionalInformation( "TransactionAccepted", $pnData['TransactionAccepted'] );
+        		$payment->setAdditionalInformation( "Reference", $pnData['Reference'] );
+                $payment->setAdditionalInformation( "RequestTrace", $pnData['RequestTrace'] );
                 $payment->setAdditionalInformation( "email_address", $pnData['email_address'] );
-        		$payment->setAdditionalInformation( "amount_fee", $pnData['amount_fee'] );
+        		$payment->setAdditionalInformation( "Amount", $pnData['Amount'] );
                 $payment->save();
 
                 // Save invoice
@@ -142,9 +123,17 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
         if( $pnError )
         {
             pnlog( 'Error occurred: '. $pnErrMsg );
-            
+            pnlog( 'Reason: '. $pnData['Reason'] );
+            $url = Mage::getUrl( 'paynow/redirect/cancel', array( '_secure' => true ) );
+            echo "Transaction failed, reason: " . $pnData['Reason'] . "<br><br>";
+            echo "<a href='$url'>Click here to return to the store.</a>";
             // TODO: Use Magento structures to send email
-        }
+        } else {
+        	// return Mage::getUrl( 'paynow/redirect/success', array( '_secure' => true ) );
+        	$this->_redirect('paynow/redirect/success');
+        	
+        }        
+
     }
 
     /**

@@ -1,13 +1,13 @@
 <?php
 /**
- * paynow_common.inc
+ * Sage Pay paynow_common.inc
  */
 
-//// Create user agent string
+// Create user agent string
 // User agent constituents (for cURL)
 define( 'PN_SOFTWARE_NAME', 'Magento' );
 define( 'PN_SOFTWARE_VER', Mage::getVersion() );
-define( 'PN_MODULE_NAME', 'SagePayNow-Magento' );
+define( 'PN_MODULE_NAME', 'PayNow-Magento' );
 define( 'PN_MODULE_VER', '1.1' );
 
 // Features
@@ -54,7 +54,7 @@ define( 'PN_MSG_OK', 'Payment was successful' );
 define( 'PN_MSG_FAILED', 'Payment has failed' );
 define( 'PN_MSG_PENDING',
     'The payment is pending. Please note, you will receive another Instant'.
-    ' Transaction Notification when the payment status changes to'.
+    ' Payment Notification when the payment status changes to'.
     ' "Completed", or "Failed"' );
 
 
@@ -84,7 +84,7 @@ function pnlog( $msg = '', $close = false )
             if( !$fh )
             {
                 $pathinfo = pathinfo( __FILE__ );
-                $fh = fopen( $pathinfo['dirname'] .'/sagepaynow.log', 'a+' );
+                $fh = fopen( $pathinfo['dirname'] .'/paynow.log', 'a+' );
             }
 
             // If file was successfully created
@@ -101,7 +101,6 @@ function pnlog( $msg = '', $close = false )
 /**
  * pnGetData
  *  
- * @author Jonathan Smit
  */
 function pnGetData()
 {
@@ -120,7 +119,7 @@ function pnGetData()
 }
 
 /**
- * pnValidSignature
+ * pnValidSignature - TODO not used
  *
  */
 function pnValidSignature( $pnData = null, &$pnParamString = null )
@@ -146,7 +145,6 @@ function pnValidSignature( $pnData = null, &$pnParamString = null )
 /**
  * pnValidData
  *
- * @author Jonathan Smit
  * @param $pnHost String Hostname to use 
  * @param $pnParamString String
  */
@@ -279,7 +277,6 @@ function pnValidIP( $sourceIP )
  * 
  * eg. 100.00 is equal to 100.0001
  *
- * @author Jonathan Smit
  * @param $amount1 Float 1st amount for comparison 
  * @param $amount2 Float 2nd amount for comparison
  */

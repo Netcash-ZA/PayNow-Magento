@@ -4,9 +4,9 @@ config.xml
 -->
 <config>
 	<modules>
-		<SagePayNow_SagePayNow>
+		<PayNow_PayNow>
 			<active>true</active>
 			<codePool>community</codePool>
-		</SagePayNow_SagePayNow>
+		</PayNow_PayNow>
 	</modules>
 </config>

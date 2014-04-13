@@ -7,8 +7,7 @@
  * PayNow_PayNow_Block_Request 
  */
 class PayNow_PayNow_Block_Request extends Mage_Core_Block_Abstract
-{
-    // {{{ _toHtml()
+{    
     /**
      * _toHtml 
      */
@@ -26,12 +25,11 @@ class PayNow_PayNow_Block_Request extends Mage_Core_Block_Abstract
             $form->addField( $field, 'hidden', array( 'name' => $field, 'value' => $value, 'size' => 200 ) );
         
         $html = '<html><body>';
-        $html.= $this->__( 'You will be redirected to Pay Now in a few seconds.' );
+        $html.= $this->__( 'You will be redirected to Sage Pay Now in a few seconds.' );
         $html.= $form->toHtml();
 		#echo $html;exit;
         $html.= '<script type="text/javascript">document.getElementById( "paynow_checkout" ).submit();</script>';
         $html.= '</body></html>';
         return $html;
-    }
-    // }}}
+    } 
 }
