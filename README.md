@@ -36,7 +36,7 @@ Sage Pay Now Gateway Server Configuration Steps:
 Sage Pay Now Callback
 
 6. Choose the following for both your Accept and Decline URLs:
-	> http://magento.gatewaymodules.com/index.php/paynow/notify
+	> http://magento_installation/index.php/paynow/notify
 
 Magento Steps:
 
