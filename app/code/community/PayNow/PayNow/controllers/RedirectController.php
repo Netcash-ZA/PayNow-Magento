@@ -182,7 +182,7 @@ class PayNow_PayNow_RedirectController extends Mage_Core_Controller_Front_Action
 			//$this->_redirect( 'checkout/onepage/success', array( '_secure' => true ) );
 			//Alternate redirect code
 			pnlog('successAction() alternate redirect to checkout/onepage/success ');
-			url = Mage::getUrl('checkout/onepage/success');
+			$url = Mage::getUrl('checkout/onepage/success');
 			response = Mage::app()->getFrontController()->getResponse();
 			response->setRedirect($url);
 			response->sendResponse();
