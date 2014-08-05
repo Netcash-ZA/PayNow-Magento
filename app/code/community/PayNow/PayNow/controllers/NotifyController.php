@@ -81,21 +81,7 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
             }
         }
         
-//         //// Verify data received
-//         if( !$pnError )
-//         {
-//             pnlog( 'Verify data received' );
-        
-//             $pnValid = pnValidData( $pnHost, $pnParamString );
-        
-//             if( !$pnValid )
-//             {
-//                 $pnError = true;
-//                 $pnErrMsg = PN_ERR_BAD_ACCESS;
-//             }
-//         }
-
-        //// Check status and update order
+        // Check status and update order
         if( !$pnError )
         {
             pnlog( 'Check status and update order' );
@@ -110,7 +96,7 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
         		$payment->setAdditionalInformation( "TransactionAccepted", $pnData['TransactionAccepted'] );
         		$payment->setAdditionalInformation( "Reference", $pnData['Reference'] );
                 $payment->setAdditionalInformation( "RequestTrace", $pnData['RequestTrace'] );
-                $payment->setAdditionalInformation( "email_address", $pnData['email_address'] );
+                //$payment->setAdditionalInformation( "email_address", $pnData['email_address'] );
         		$payment->setAdditionalInformation( "Amount", $pnData['Amount'] );
                 $payment->save();
 
