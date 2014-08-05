@@ -186,8 +186,6 @@ class PayNow_PayNow_RedirectController extends Mage_Core_Controller_Front_Action
 			$response = Mage::app()->getFrontController()->getResponse();
 			$response->setRedirect($url);
 			$response->sendResponse();
-
-			
             return;
 		}
         catch( Mage_Core_Exception $e )
