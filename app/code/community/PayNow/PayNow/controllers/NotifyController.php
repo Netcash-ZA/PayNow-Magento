@@ -25,21 +25,18 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
         $pnError = false;
         $pnErrMsg = '';
         $pnData = array();
-        $pnHost = 'www.paynowurl.co.za';
-        $pnOrderId = '';
-        $pnParamString = '';
-        
+
         pnlog( 'Sage Pay Now IPN call received' );
         pnlog( 'Server = '. Mage::getStoreConfig( 'payment/paynow/server' ) );
         
-        //// Notify PayFast that information has been received
+        // Notify Pay Now that information has been received
         if( !$pnError )
         {
             header( 'HTTP/1.0 200 OK' );
             flush();
         }
         
-        //// Get data sent by PayFast
+        // Get data posted back by Pay Now
         if( !$pnError )
         {
             pnlog( 'Get posted data' );
@@ -62,7 +59,7 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
 			//$pnErrMsg = PN_DECLINED			
 		}
         
-        //// Get internal order and verify it hasn't already been processed
+        // Get internal order and verify it hasn't already been processed
         if( !$pnError )
         {
             pnlog( "Check order hasn't been processed" );
