@@ -98,14 +98,17 @@ class PayNow_PayNow_RedirectController extends Mage_Core_Controller_Front_Action
         
             if( !$order->getId() )
                 Mage::throwException( 'No order for processing found' );
-        
+            pnlog('Current order state is ' . $order->getState());
+            pnlog('Checking if order state is pending payment...');
             if( $order->getState() != Mage_Sales_Model_Order::STATE_PENDING_PAYMENT )
             {
+                pnlog('Order state was not pending payment. Now setting it...');
                 $order->setState(
                     Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
                     $this->_getPendingPaymentStatus(),
                     Mage::helper( 'paynow' )->__( 'Customer was redirected to Sage Pay Now.' )
                 )->save();
+                pnlog('Finished setting order state. The order state is now ' . $order->getState());
             }
 
             if( $session->getQuoteId() && $session->getLastSuccessQuoteId() )

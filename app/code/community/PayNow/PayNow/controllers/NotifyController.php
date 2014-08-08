@@ -13,7 +13,6 @@ include_once(dirname(__FILE__) . '/../paynow_common.inc');
  */
 class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
 {
-    // {{{ indexAction()
     /**
      * indexAction
      *
@@ -30,14 +29,16 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
         pnlog('Server = ' . Mage::getStoreConfig('payment/paynow/server'));
 
         // Notify Pay Now that information has been received
-        if (!$pnError) {
-            header('HTTP/1.0 200 OK');
-            flush();
-        }
+        // Fails with 'headers already sent' on some servers
+        // See http://stackoverflow.com/questions/8028957/how-to-fix-headers-already-sent-error-in-php
+        //if (!$pnError) {
+        //header('HTTP/1.0 200 OK');
+        //flush();
+        //}
 
         // Get data posted back by Pay Now
         if (!$pnError) {
-            pnlog('Get posted data');
+            pnlog('Get data posted back by Pay Now');
 
             // Posted variables from ITN
             $pnData = pnGetData();
@@ -66,6 +67,7 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
             $this->_storeID = $order->getStoreId();
 
             // Check order is in "pending payment" state
+            pnlog("The current order status is " . $order->getStatus());
             if ($order->getStatus() !== Mage_Sales_Model_Order::STATE_PENDING_PAYMENT) {
                 $pnError = true;
                 $pnErrMsg = PN_ERR_ORDER_PROCESSED;
@@ -88,26 +90,23 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
                 //$payment->setAdditionalInformation( "email_address", $pnData['email_address'] );
                 $payment->setAdditionalInformation("Amount", $pnData['Amount']);
                 $payment->save();
-
                 // Save invoice
                 $this->saveInvoice($order);
             }
         }
 
-        // If an error occurred
+        // If an error occurred show the reason and present a hyperlink back to the store
         if ($pnError) {
             pnlog('Error occurred: ' . $pnErrMsg);
-            pnlog('Reason: ' . $pnData['Reason']);
             $url = Mage::getUrl('paynow/redirect/cancel', array('_secure' => true));
-            echo "Transaction failed, reason: " . $pnData['Reason'] . "<br><br>";
+            echo "<html><body>";
+            echo "Transaction failed, reason: " . $pnErrMsg . "<br><br>";
             echo "<a href='$url'>Click here to return to the store.</a>";
-            // TODO: Use Magento structures to send email
+            echo "</body></html>";
         } else {
             // return Mage::getUrl( 'paynow/redirect/success', array( '_secure' => true ) );
             $this->_redirect('paynow/redirect/success');
-
         }
-
     }
 
     /**
