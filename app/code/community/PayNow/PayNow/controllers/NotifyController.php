@@ -97,13 +97,17 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
 
         // If an error occurred show the reason and present a hyperlink back to the store
         if ($pnError) {
-            pnlog('Error occurred: ' . $pnErrMsg);
+            pnlog('Transaction failed, reason: ' . $pnErrMsg);
             $url = Mage::getUrl('paynow/redirect/cancel', array('_secure' => true));
             echo "<html><body>";
             echo "Transaction failed, reason: " . $pnErrMsg . "<br><br>";
+            if ($pnData['TransactionAccepted'] != "true") {
+                pnlog('Return message from payment gateway: ' . $pnData['Reason']);
+                echo "Return message from payment gateway: " . $pnData['Reason'];
+            }
             echo "<a href='$url'>Click here to return to the store.</a>";
             echo "</body></html>";
-        } else {
+        } else { // Redirect to the success page
             // return Mage::getUrl( 'paynow/redirect/success', array( '_secure' => true ) );
             $this->_redirect('paynow/redirect/success');
         }
