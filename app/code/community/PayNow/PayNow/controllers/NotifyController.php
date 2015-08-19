@@ -82,6 +82,13 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
             if ($pnData['TransactionAccepted'] == "true") {
                 pnlog('Order complete');
 
+                // Currently order gets set to "Pending" even if invoice is paid.
+                // Looking at http://stackoverflow.com/a/18711371 (http://stackoverflow.com/questions/18711176/how-to-set-order-status-as-complete-in-magento)
+                //  it is suggested that this is normal behaviour and an order is only "complete" after shipment
+                // 2 Options.
+                //  a. Leave as is. (Recommended)
+                //  b. Force order complete status (http://stackoverflow.com/a/18711313)
+
                 // Update order additional payment information
                 $payment = $order->getPayment();
                 $payment->setAdditionalInformation("TransactionAccepted", $pnData['TransactionAccepted']);
