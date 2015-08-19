@@ -20,6 +20,34 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
      */
     public function indexAction()
     {
+        $url_for_redirect = Mage::getUrl('customer/account');
+
+        if( isset($_POST) && !empty($_POST) ) {
+
+            // This is the notification coming in!
+            // Act as an IPN request and forward request to Credit Card method.
+            // Logic is exactly the same
+
+            $this->_pn_do_transaction();
+            die();
+
+        } else {
+            // Probably calling the "redirect" URL
+
+            pnlog(__FILE__ . ' Probably calling the "redirect" URL');
+
+            if( $url_for_redirect ) {
+                header ( "Location: {$url_for_redirect}" );
+            } else {
+                die( "No 'redirect' URL set." );
+            }
+        }
+
+        die( PN_ERR_BAD_ACCESS );
+    }
+
+    private function _pn_do_transaction() {
+
         // Variable Initialization
         $pnError = false;
         $pnErrMsg = '';
