@@ -1,7 +1,7 @@
 Sage Pay Now Credit Card Payment Module for Magento
 ===================================================
 
-Revision 1.0.1
+Revision 2.0.0
 
 Introduction
 ------------
@@ -35,7 +35,7 @@ Sage Pay Now Gateway Server Configuration Steps:
 
 Sage Pay Now Callback
 
-6. Choose the following for both your Accept and Decline URLs:
+6. Choose the following for your Accept, Decline, Notify & Redirect URLs:
 	> http://magento_installation/index.php/paynow/notify
 
 Magento Steps:
@@ -53,10 +53,11 @@ Magento Steps:
 Revision History
 ----------------
 
+* 25 Aug 2015/2.0.0 Add support for EFT/Retail payments
 * 11 May 2014/1.0.1 Documentation with callback URL
 * 09 Mar 2014/1.0.0 First version
 
-Tested with Magento version 
+Tested with Magento version
 
 Demo Site
 ---------
