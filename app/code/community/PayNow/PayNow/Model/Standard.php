@@ -130,8 +130,6 @@ class PayNow_PayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
 
 		// Sage Pay Now service key
         $serviceKey = $this->getConfigData( 'service_key' );
-        // Sage Pay Now software vendor key
-        $softwareVendorKey = '24ade73c-98cf-47b3-99be-cc7b867b3080';
 
         // Create description
         foreach( $order->getAllItems() as $items )
@@ -149,14 +147,14 @@ class PayNow_PayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
         $customerName = $order->getData('customer_firstname') . " " . $order->getData('customer_lastname');
         $orderID = $this->getRealOrderId();
         $customerID = $order->getData('customer_id');
-        $sageGUID = "TBC";
+        $sageGUID = "f0f593a7-338d-406b-b340-5b4acd50f627";
 
         // Construct data for the form
 		$data = array(
             // Merchant details
 
 			'm1' => $serviceKey,
-			'm2' => $softwareVendorKey,
+			'm2' => $sageGUID,
 			'return_url' => $this->getPaidSuccessUrl(),
 			'cancel_url' => $this->getPaidCancelUrl(),
 			'notify_url' => $this->getPaidNotifyUrl(),
@@ -166,7 +164,7 @@ class PayNow_PayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
 			'm9' => $order->getData( 'customer_email' ),
 
             'p3' => "{$customerName} | {$orderID}",
-            'm3' => "$sageGUID",
+            // 'm3' => "$sageGUID",
             'm4' => "{$customerID}",
 
             // Item details
