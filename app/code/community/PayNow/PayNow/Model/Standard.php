@@ -186,7 +186,7 @@ class PayNow_PayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
     {
         $state = Mage_Sales_Model_Order::STATE_PENDING_PAYMENT;
         $stateObject->setState( $state );
-        $stateObject->setStatus( 'pending_payment' );
+        $stateObject->setStatus( $state );
         $stateObject->setIsNotified( false );
     }
 
