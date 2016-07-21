@@ -156,13 +156,16 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
 	            echo "</body></html>";
 	        } else { // Redirect to the success page
 	            // return Mage::getUrl( 'paynow/redirect/success', array( '_secure' => true ) );
-	            $this->_redirect('paynow/redirect/success');
+	            // $this->_redirect('paynow/redirect/success');
+	            header("Location: ".'paynow/redirect/success');
 	        }
         } else {
+        	$url_for_redirect = Mage::getUrl('customer/account');
 
         	// Probably calling the "redirect" URL
-        	pnlog('Probably calling redirect url: ' . 'paynow/redirect/success');
-        	$this->_redirect('paynow/redirect/success');
+        	pnlog('Probably calling redirect url: ' . $url_for_redirect);
+        	// $this->_redirect($url_for_redirect);
+        	header("Location: $url_for_redirect");
 
         }
     }
