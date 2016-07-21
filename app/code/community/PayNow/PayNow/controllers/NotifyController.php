@@ -46,6 +46,15 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
         die( PN_ERR_BAD_ACCESS );
     }
 
+	/**
+	 * Check if this is a 'callback' stating the transaction is pending.
+	 */
+	private function pn_is_pending() {
+		return isset($_POST['TransactionAccepted'])
+			&& $_POST['TransactionAccepted'] == 'false'
+			&& stristr($_POST['Reason'], 'pending');
+	}
+
     private function _pn_do_transaction() {
 
         // Variable Initialization
@@ -55,14 +64,6 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
 
         pnlog('Sage Pay Now IPN call received');
         pnlog('Server = ' . Mage::getStoreConfig('payment/paynow/server'));
-
-        // Notify Pay Now that information has been received
-        // Fails with 'headers already sent' on some servers
-        // See http://stackoverflow.com/questions/8028957/how-to-fix-headers-already-sent-error-in-php
-        //if (!$pnError) {
-        //header('HTTP/1.0 200 OK');
-        //flush();
-        //}
 
         // Get data posted back by Pay Now
         if (!$pnError) {
@@ -79,72 +80,90 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
             }
         }
 
-        if ($pnData['TransactionAccepted'] == 'false') {
-            $pnError = true;
-            $pnErrMsg = PN_MSG_FAILED;
-        }
+        if( isset($_POST) && !empty($_POST) && !$this->pn_is_pending() ) {
 
-        // Get internal order and verify it hasn't already been processed
-        if (!$pnError) {
-            pnlog("Check if the order has not already been processed");
 
-            // Load order
-            $trnsOrdId = $pnData['Reference'];
-            $order = Mage::getModel('sales/order');
-            $order->loadByIncrementId($trnsOrdId);
-            $this->_storeID = $order->getStoreId();
+	        // Notify Pay Now that information has been received
+	        // Fails with 'headers already sent' on some servers
+	        // See http://stackoverflow.com/questions/8028957/how-to-fix-headers-already-sent-error-in-php
+	        //if (!$pnError) {
+	        //header('HTTP/1.0 200 OK');
+	        //flush();
+	        //}
 
-            // Check order is in "pending payment" state
-            pnlog("The current order status is " . $order->getStatus());
-            if ($order->getStatus() !== Mage_Sales_Model_Order::STATE_PENDING_PAYMENT) {
-                $pnError = true;
-                $pnErrMsg = PN_ERR_ORDER_PROCESSED;
-            }
-        }
+	        if ($pnData['TransactionAccepted'] == 'false') {
+	            $pnError = true;
+	            $pnErrMsg = PN_MSG_FAILED;
+	        }
 
-        // Check status and update order
-        if (!$pnError) {
-            pnlog('Check status and update order');
+	        // Get internal order and verify it hasn't already been processed
+	        if (!$pnError) {
+	            pnlog("Check if the order has not already been processed");
 
-            // Successful
-            if ($pnData['TransactionAccepted'] == "true") {
-                pnlog('Order complete');
+	            // Load order
+	            $trnsOrdId = $pnData['Reference'];
+	            $order = Mage::getModel('sales/order');
+	            $order->loadByIncrementId($trnsOrdId);
+	            $this->_storeID = $order->getStoreId();
 
-                // Currently order gets set to "Pending" even if invoice is paid.
-                // Looking at http://stackoverflow.com/a/18711371 (http://stackoverflow.com/questions/18711176/how-to-set-order-status-as-complete-in-magento)
-                //  it is suggested that this is normal behaviour and an order is only "complete" after shipment
-                // 2 Options.
-                //  a. Leave as is. (Recommended)
-                //  b. Force order complete status (http://stackoverflow.com/a/18711313)
+	            // Check order is in "pending payment" state
+	            pnlog("The current order status is " . $order->getStatus() . " vs " . Mage_Sales_Model_Order::STATE_PENDING_PAYMENT);
+	            if ($order->getStatus() !== Mage_Sales_Model_Order::STATE_PENDING_PAYMENT) {
+	                $pnError = true;
+	                $pnErrMsg = PN_ERR_ORDER_PROCESSED;
+	            }
+	        }
 
-                // Update order additional payment information
-                $payment = $order->getPayment();
-                $payment->setAdditionalInformation("TransactionAccepted", $pnData['TransactionAccepted']);
-                $payment->setAdditionalInformation("Reference", $pnData['Reference']);
-                $payment->setAdditionalInformation("RequestTrace", $pnData['RequestTrace']);
-                //$payment->setAdditionalInformation( "email_address", $pnData['email_address'] );
-                $payment->setAdditionalInformation("Amount", $pnData['Amount']);
-                $payment->save();
-                // Save invoice
-                $this->saveInvoice($order);
-            }
-        }
+	        // Check status and update order
+	        if (!$pnError) {
+	            pnlog('Check status and update order');
 
-        // If an error occurred show the reason and present a hyperlink back to the store
-        if ($pnError) {
-            pnlog('Transaction failed, reason: ' . $pnErrMsg);
-            $url = Mage::getUrl('paynow/redirect/cancel', array('_secure' => true));
-            echo "<html><body>";
-            echo "Transaction failed, reason: " . $pnErrMsg . "<br><br>";
-            if ($pnData['TransactionAccepted'] != "true") {
-                pnlog('Return message from payment gateway: ' . $pnData['Reason']);
-                echo "Return message from payment gateway: " . $pnData['Reason'];
-            }
-            echo "<a href='$url'>Click here to return to the store.</a>";
-            echo "</body></html>";
-        } else { // Redirect to the success page
-            // return Mage::getUrl( 'paynow/redirect/success', array( '_secure' => true ) );
-            $this->_redirect('paynow/redirect/success');
+	            // Successful
+	            if ($pnData['TransactionAccepted'] == "true") {
+	                pnlog('Order complete');
+
+	                // Currently order gets set to "Pending" even if invoice is paid.
+	                // Looking at http://stackoverflow.com/a/18711371 (http://stackoverflow.com/questions/18711176/how-to-set-order-status-as-complete-in-magento)
+	                //  it is suggested that this is normal behaviour and an order is only "complete" after shipment
+	                // 2 Options.
+	                //  a. Leave as is. (Recommended)
+	                //  b. Force order complete status (http://stackoverflow.com/a/18711313)
+
+	                // Update order additional payment information
+	                $payment = $order->getPayment();
+	                $payment->setAdditionalInformation("TransactionAccepted", $pnData['TransactionAccepted']);
+	                $payment->setAdditionalInformation("Reference", $pnData['Reference']);
+	                $payment->setAdditionalInformation("RequestTrace", $pnData['RequestTrace']);
+	                //$payment->setAdditionalInformation( "email_address", $pnData['email_address'] );
+	                $payment->setAdditionalInformation("Amount", $pnData['Amount']);
+	                $payment->save();
+	                // Save invoice
+	                $this->saveInvoice($order);
+	            }
+	        }
+
+	        // If an error occurred show the reason and present a hyperlink back to the store
+	        if ($pnError) {
+	            pnlog('Transaction failed, reason: ' . $pnErrMsg);
+	            $url = Mage::getUrl('paynow/redirect/cancel', array('_secure' => true));
+	            echo "<html><body>";
+	            echo "Transaction failed, reason: " . $pnErrMsg . "<br><br>";
+	            if ($pnData['TransactionAccepted'] != "true") {
+	                pnlog('Return message from payment gateway: ' . $pnData['Reason']);
+	                echo "Return message from payment gateway: " . $pnData['Reason'];
+	            }
+	            echo "<a href='$url'>Click here to return to the store.</a>";
+	            echo "</body></html>";
+	        } else { // Redirect to the success page
+	            // return Mage::getUrl( 'paynow/redirect/success', array( '_secure' => true ) );
+	            $this->_redirect('paynow/redirect/success');
+	        }
+        } else {
+
+        	// Probably calling the "redirect" URL
+        	pnlog('Probably calling redirect url: ' . 'paynow/redirect/success');
+        	$this->_redirect('paynow/redirect/success');
+
         }
     }
 
