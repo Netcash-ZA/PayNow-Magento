@@ -20,7 +20,6 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
      */
     public function indexAction()
     {
-        $url_for_redirect = Mage::getUrl('customer/account');
 
         if( isset($_POST) && !empty($_POST) ) {
 
@@ -31,16 +30,6 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
             $this->_pn_do_transaction();
             die();
 
-        } else {
-            // Probably calling the "redirect" URL
-
-            pnlog(__FILE__ . ' Probably calling the "redirect" URL');
-
-            if( $url_for_redirect ) {
-                header ( "Location: {$url_for_redirect}" );
-            } else {
-                die( "No 'redirect' URL set." );
-            }
         }
 
         die( PN_ERR_BAD_ACCESS );
@@ -111,6 +100,8 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
 	            if ($order->getStatus() !== Mage_Sales_Model_Order::STATE_PENDING_PAYMENT) {
 	                $pnError = true;
 	                $pnErrMsg = PN_ERR_ORDER_PROCESSED;
+	                pnlog("Order already processed. Redirecting to success");
+	                header("Location: redirect/success");
 	            }
 	        }
 
@@ -157,7 +148,7 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
 	        } else { // Redirect to the success page
 	            // return Mage::getUrl( 'paynow/redirect/success', array( '_secure' => true ) );
 	            // $this->_redirect('paynow/redirect/success');
-	            header("Location: ".'paynow/redirect/success');
+	            header("Location: paynow/redirect/success");
 	        }
         } else {
         	$url_for_redirect = Mage::getUrl('customer/account');
