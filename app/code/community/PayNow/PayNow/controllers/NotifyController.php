@@ -101,7 +101,10 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
 	                $pnError = true;
 	                $pnErrMsg = PN_ERR_ORDER_PROCESSED;
 	                pnlog("Order already processed. Redirecting to success");
-	                header("Location: redirect/success");
+
+	                $url = Mage::getUrl( 'paynow/redirect/success', array( '_secure' => true ) );
+	                header("Location: {$url}");
+	                die();
 	            }
 	        }
 
@@ -135,20 +138,24 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
 
 	        // If an error occurred show the reason and present a hyperlink back to the store
 	        if ($pnError) {
-	            pnlog('Transaction failed, reason: ' . $pnErrMsg);
+	        	$_msg = 'Transaction failed, reason: ' . $pnErrMsg;
+
+	        	// $payment = $order->getPayment();
+	        	// if( $payment ) {
+	        	// 	$payment->setAdditionalInformation($_msg);
+	        	// 	$payment->save();
+	        	// }
+
+	            pnlog($_msg);
 	            $url = Mage::getUrl('paynow/redirect/cancel', array('_secure' => true));
-	            echo "<html><body>";
-	            echo "Transaction failed, reason: " . $pnErrMsg . "<br><br>";
-	            if ($pnData['TransactionAccepted'] != "true") {
-	                pnlog('Return message from payment gateway: ' . $pnData['Reason']);
-	                echo "Return message from payment gateway: " . $pnData['Reason'];
-	            }
-	            echo "<a href='$url'>Click here to return to the store.</a>";
-	            echo "</body></html>";
+	            header("Location: {$url}");
+	            die();
+
 	        } else { // Redirect to the success page
-	            // return Mage::getUrl( 'paynow/redirect/success', array( '_secure' => true ) );
+	            $url = Mage::getUrl( 'paynow/redirect/success', array( '_secure' => true ) );
 	            // $this->_redirect('paynow/redirect/success');
-	            header("Location: paynow/redirect/success");
+	            header("Location: {$url}");
+	            die();
 	        }
         } else {
         	$url_for_redirect = Mage::getUrl('customer/account');
@@ -157,6 +164,7 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
         	pnlog('Probably calling redirect url: ' . $url_for_redirect);
         	// $this->_redirect($url_for_redirect);
         	header("Location: $url_for_redirect");
+        	die();
 
         }
     }
