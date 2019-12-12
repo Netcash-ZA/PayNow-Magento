@@ -4,13 +4,13 @@
  */
 
 /**
- * SagePayNow_SagePayNow_Block_Form 
+ * PayNow_PayNow_Block_Form
  */
 class PayNow_PayNow_Block_Form extends Mage_Payment_Block_Form
 {
     /**
-     * _construct() 
-     */    
+     * _construct()
+     */
     protected function _construct()
     {
         parent::_construct();

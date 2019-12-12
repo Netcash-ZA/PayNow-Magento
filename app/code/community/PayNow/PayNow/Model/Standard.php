@@ -128,7 +128,7 @@ class PayNow_PayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
         $order = Mage::getModel( 'sales/order' )->loadByIncrementId( $orderIncrementId );
 		$description = '';
 
-		// Sage Pay Now service key
+		// Netcash Pay Now service key
         $serviceKey = $this->getConfigData( 'service_key' );
 
         // Create description
@@ -147,14 +147,14 @@ class PayNow_PayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
         $customerName = $order->getData('customer_firstname') . " " . $order->getData('customer_lastname');
         $orderID = $this->getRealOrderId();
         $customerID = $order->getData('customer_id');
-        $sageGUID = "f0f593a7-338d-406b-b340-5b4acd50f627";
+        $guid = "f0f593a7-338d-406b-b340-5b4acd50f627";
 
         // Construct data for the form
 		$data = array(
             // Merchant details
 
 			'm1' => $serviceKey,
-			'm2' => $sageGUID,
+			'm2' => $guid,
 			'return_url' => $this->getPaidSuccessUrl(),
 			'cancel_url' => $this->getPaidCancelUrl(),
 			'notify_url' => $this->getPaidNotifyUrl(),
@@ -164,7 +164,7 @@ class PayNow_PayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
 			'm9' => $order->getData( 'customer_email' ),
 
             'p3' => "{$customerName} | {$orderID}",
-            // 'm3' => "$sageGUID",
+            // 'm3' => "$guid",
             'm4' => "{$customerID}",
 
             // Item details
@@ -172,7 +172,8 @@ class PayNow_PayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
 			// 'p3' => $this->getStoreName().', Order #'.$this->getRealOrderId(),
 			'p4' => $this->getTotalAmount( $order ),
 			// p2 = unique ref
-			'p2' => $this->getRealOrderId()
+			'p2' => $this->getRealOrderId(),
+            'm14' => 1
 
         );
         pnlog ('Standard.php/getStandardCheckoutFormFields: ' . print_r($data,true));
@@ -193,11 +194,11 @@ class PayNow_PayNow_Model_Standard extends Mage_Payment_Model_Method_Abstract
     /**
      * getPayNowUrl
      *
-     * Get URL for form submission to Sage Pay Now.
+     * Get URL for form submission to Netcash Pay Now.
      */
 	public function getPayNowUrl()
     {
-		$url = 'https://paynow.sagepay.co.za/site/paynow.aspx';
+		$url = 'https://paynow.netcash.co.za/site/paynow.aspx';
 		return( $url );
     }
 

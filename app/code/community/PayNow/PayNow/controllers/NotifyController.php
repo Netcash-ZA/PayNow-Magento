@@ -3,7 +3,7 @@
  * NotifyController.php
  */
 
-// Include the Sage Pay Now common file
+// Include the Netcash Pay Now common file
 define('PN_DEBUG', (Mage::getStoreConfig('payment/paynow/debugging') ? true : false));
 include_once(dirname(__FILE__) . '/../paynow_common.inc');
 
@@ -71,7 +71,7 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
         $pnErrMsg = '';
         $pnData = array();
 
-        pnlog('Sage Pay Now IPN call received');
+        pnlog('Netcash Pay Now IPN call received');
         pnlog('Server = ' . Mage::getStoreConfig('payment/paynow/server'));
 
         // Get data posted back by Pay Now
@@ -81,7 +81,7 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
             // Posted variables from ITN
             $pnData = pnGetData();
 
-            pnlog('Sage Pay Now Data: ' . print_r($pnData, true));
+            pnlog('Netcash Pay Now Data: ' . print_r($pnData, true));
 
             if ($pnData === false) {
                 $pnError = true;

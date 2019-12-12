@@ -1,6 +1,6 @@
 <?php
 /**
- * Sage Pay paynow_common.inc
+ * Netcash paynow_common.inc
  */
 
 // Create user agent string
@@ -100,7 +100,7 @@ function pnlog( $msg = '', $close = false )
 
 /**
  * pnGetData
- *  
+ *
  */
 function pnGetData()
 {
@@ -134,7 +134,7 @@ function pnValidSignature( $pnData = null, &$pnParamString = null )
     // Remove the last '&' from the parameter string
     $pnParamString = substr( $pnParamString, 0, -1 );
     $signature = md5( $pnParamString );
-    
+
     $result = ( $pnData['signature'] == $signature );
 
     pnlog( 'Signature = '. ( $result ? 'valid' : 'invalid' ) );
@@ -145,7 +145,7 @@ function pnValidSignature( $pnData = null, &$pnParamString = null )
 /**
  * pnValidData
  *
- * @param $pnHost String Hostname to use 
+ * @param $pnHost String Hostname to use
  * @param $pnParamString String
  */
 function pnValidData( $pnHost = 'www.paynow.co.za', $pnParamString = '' )
@@ -161,7 +161,7 @@ function pnValidData( $pnHost = 'www.paynow.co.za', $pnParamString = '' )
 
         // Create default cURL object
         $ch = curl_init();
-    
+
         // Set cURL options - Use curl_setopt for freater PHP compatibility
         // Base settings
         curl_setopt( $ch, CURLOPT_USERAGENT, PN_USER_AGENT );  // Set user agent
@@ -169,13 +169,13 @@ function pnValidData( $pnHost = 'www.paynow.co.za', $pnParamString = '' )
         curl_setopt( $ch, CURLOPT_HEADER, false );             // Don't include header in output
         curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, true );
         curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
-        
+
         // Standard settings
         curl_setopt( $ch, CURLOPT_URL, $url );
         curl_setopt( $ch, CURLOPT_POST, true );
         curl_setopt( $ch, CURLOPT_POSTFIELDS, $pnParamString );
         curl_setopt( $ch, CURLOPT_TIMEOUT, PN_TIMEOUT );
-    
+
         // Execute CURL
         $response = curl_exec( $ch );
         curl_close( $ch );
@@ -187,25 +187,25 @@ function pnValidData( $pnHost = 'www.paynow.co.za', $pnParamString = '' )
         $header = '';
         $res = '';
         $headerDone = false;
-         
+
         // Construct Header
         $header = "POST /eng/query/validate HTTP/1.0\r\n";
        	$header .= "Host: ". $pnHost ."\r\n";
         $header .= "User-Agent: ". PN_USER_AGENT ."\r\n";
         $header .= "Content-Type: application/x-www-form-urlencoded\r\n";
         $header .= "Content-Length: " . strlen( $pnParamString ) . "\r\n\r\n";
- 
+
         // Connect to server
         $socket = fsockopen( 'ssl://'. $pnHost, 443, $errno, $errstr, PN_TIMEOUT );
- 
+
         // Send command to server
         fputs( $socket, $header . $pnParamString );
- 
+
         // Read the response from the server
         while( !feof( $socket ) )
         {
             $line = fgets( $socket, 1024 );
- 
+
             // Check if we are finished reading the header yet
             if( strcmp( $line, "\r\n" ) == 0 )
             {
@@ -219,7 +219,7 @@ function pnValidData( $pnHost = 'www.paynow.co.za', $pnParamString = '' )
                 $response .= $line;
             }
         }
-        
+
     }
 
     pnlog( "Response:\n". print_r( $response, true ) );
@@ -238,13 +238,13 @@ function pnValidData( $pnHost = 'www.paynow.co.za', $pnParamString = '' )
  * pnValidIP
  * @TODO Remove, not needed
  *
- * @param $sourceIP String Source IP address 
+ * @param $sourceIP String Source IP address
  */
 function pnValidIP( $sourceIP )
 {
     // Variable initialization
     $validHosts = array(
-        'www.paynow.co.za'        
+        'www.paynow.co.za'
         );
 
     $validIps = array();
@@ -270,14 +270,14 @@ function pnValidIP( $sourceIP )
 
 /**
  * pnAmountsEqual
- * 
+ *
  * Checks to see whether the given amounts are equal using a proper floating
  * point comparison with an Epsilon which ensures that insignificant decimal
  * places are ignored in the comparison.
- * 
+ *
  * eg. 100.00 is equal to 100.0001
  *
- * @param $amount1 Float 1st amount for comparison 
+ * @param $amount1 Float 1st amount for comparison
  * @param $amount2 Float 2nd amount for comparison
  */
 function pnAmountsEqual( $amount1, $amount2 )

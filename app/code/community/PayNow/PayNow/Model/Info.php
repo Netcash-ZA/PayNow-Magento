@@ -17,7 +17,7 @@ class PayNow_PayNow_Model_Info
     const M_PAYMENT_ID   = 'm_payment_id';
     const PN_PAYMENT_ID  = 'pn_payment_id';
     const EMAIL_ADDRESS  = 'email_address';
-    
+
     /**
      * All payment information map
      *
@@ -48,7 +48,7 @@ class PayNow_PayNow_Model_Info
 
     /**
      * getPaymentInfo
-     */	
+     */
 	public function getPaymentInfo( Mage_Payment_Model_Info $payment, $labelValuesOnly = false )
     {
         // Collect PayFast-specific info
@@ -78,7 +78,7 @@ class PayNow_PayNow_Model_Info
 
     /**
      * exportFromPayment
-     * 
+     *
      * Grab data from payment and map it into target
      *
      * @param Mage_Payment_Model_Info $payment
@@ -90,14 +90,14 @@ class PayNow_PayNow_Model_Info
     {
         Varien_Object_Mapper::accumulateByMap( array( $payment, 'getAdditionalInformation' ),
             $to, $map ? $map : array_flip( $this->_paymentMap ) );
-        
+
         return( $to );
     }
     // }}}
 	// {{{ _getFullInfo()
     /**
      * _getFullInfo
-     * 
+     *
      * Render info item
      *
      * @param array $keys
@@ -107,12 +107,12 @@ class PayNow_PayNow_Model_Info
 	protected function _getFullInfo( array $keys, Mage_Payment_Model_Info $payment, $labelValuesOnly )
     {
         $result = array();
-        
+
         foreach( $keys as $key )
         {
             if( !isset( $this->_paymentMapFull[$key] ) )
                 $this->_paymentMapFull[$key] = array();
-            
+
             if( !isset( $this->_paymentMapFull[$key]['label'] ) )
             {
                 if( !$payment->hasAdditionalInformation( $key ) )
@@ -127,7 +127,7 @@ class PayNow_PayNow_Model_Info
                     $this->_paymentMapFull[$key]['value'] = $this->_getValue( $value, $key );
                 }
             }
-            
+
             if( !empty( $this->_paymentMapFull[$key]['value'] ) )
             {
                 if( $labelValuesOnly )
@@ -136,15 +136,15 @@ class PayNow_PayNow_Model_Info
                     $result[$key] = $this->_paymentMapFull[$key];
             }
         }
-        
+
         return( $result );
     }
 
     /**
      * _getLabel
-     * 
+     *
      * Get the label for the given key.
-     * 
+     *
      * @param $key String Key to return the label for
      * @return String Label for the given key
      */
@@ -152,7 +152,7 @@ class PayNow_PayNow_Model_Info
     {
         // Variable initialization
         $label = '';
-        
+
         switch( $key )
         {
             case 'payment_status':
@@ -160,7 +160,7 @@ class PayNow_PayNow_Model_Info
             case 'm_payment_id':
                 $label = Mage::helper( 'paynow' )->__( 'Payment ID' ); break;
             case 'pn_payment_id':
-                $label = Mage::helper( 'paynow' )->__( 'Sage Pay Now Payment ID' ); break;
+                $label = Mage::helper( 'paynow' )->__( 'Netcash Pay Now Payment ID' ); break;
             case 'email_address':
                 $label = Mage::helper( 'paynow' )->__( 'Email Address' ); break;
             default:
@@ -172,9 +172,9 @@ class PayNow_PayNow_Model_Info
 
     /**
      * _getValue
-     * 
+     *
      * Get the value for the given key.
-     * 
+     *
      * @param $value String Key to return the label for
      * @param $key String Key to return the label for
      * @return String Label for the given key

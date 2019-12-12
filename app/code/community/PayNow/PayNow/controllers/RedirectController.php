@@ -86,7 +86,7 @@ class PayNow_PayNow_RedirectController extends Mage_Core_Controller_Front_Action
 	 */
 	public function redirectAction()
 	{
-		pnlog( 'Redirecting to Sage Pay Now in app/code/community/PayNow/PayNow/controllers/RedirectController.php' );
+		pnlog( 'Redirecting to Netcash Pay Now in app/code/community/PayNow/PayNow/controllers/RedirectController.php' );
 
 		try
 		{
@@ -106,7 +106,7 @@ class PayNow_PayNow_RedirectController extends Mage_Core_Controller_Front_Action
 				$order->setState(
 					Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
 					$this->_getPendingPaymentStatus(),
-					Mage::helper( 'paynow' )->__( 'Customer was redirected to Sage Pay Now.' )
+					Mage::helper( 'paynow' )->__( 'Customer was redirected to Netcash Pay Now.' )
 				)->save();
 				pnlog('Finished setting order state. The order state is now ' . $order->getState());
 			}
@@ -142,8 +142,8 @@ class PayNow_PayNow_RedirectController extends Mage_Core_Controller_Front_Action
 	/**
 	 * cancelAction
 	 *
-	 * Action for when a user cancel's a payment on Sage Pay Now.
-	 * @TODO Cancel Action does not exist on Sage Pay Now, remove
+	 * Action for when a user cancel's a payment on Netcash Pay Now.
+	 * @TODO Cancel Action does not exist on Netcash Pay Now, remove
 	 */
 	public function cancelAction()
 	{
