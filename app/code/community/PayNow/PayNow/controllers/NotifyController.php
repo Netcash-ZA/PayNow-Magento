@@ -44,6 +44,26 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
 			&& stristr($_POST['Reason'], 'pending');
 	}
 
+	/**
+	 * Check if this is a 'offline' payment like EFT or retail
+	 */
+	private function pn_is_offline() {
+
+		/*
+		Returns 2 for EFT
+		Returns 3 for Retail
+		*/
+		$offline_methods = [2, 3];
+
+		$method = isset($_POST['Method']) ? (int) $_POST['Method'] : null;
+		pnlog('Checking if offline: ' . print_r(array(
+			"isset" => (bool) isset($_POST['Method']),
+			"Method" => (int) $_POST['Method'],
+		), true));
+
+		return $method && in_array($method, $offline_methods);
+	}
+
     private function _pn_do_transaction() {
 
         // Variable Initialization
@@ -69,7 +89,7 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
             }
         }
 
-        if( isset($_POST) && !empty($_POST) && !$this->pn_is_pending() ) {
+        if( isset($_POST) && !empty($_POST) && !$this->pn_is_pending() && !$this->pn_is_offline() ) {
 
 
 	        // Notify Pay Now that information has been received
@@ -148,9 +168,8 @@ class PayNow_PayNow_NotifyController extends Mage_Core_Controller_Front_Action
 
 	            pnlog($_msg);
 	            $url = Mage::getUrl('paynow/redirect/cancel', array('_secure' => true));
-	            header("Location: {$url}");
+	            header("Location: $url");
 	            die();
-
 	        } else { // Redirect to the success page
 	            $url = Mage::getUrl( 'paynow/redirect/success', array( '_secure' => true ) );
 	            // $this->_redirect('paynow/redirect/success');

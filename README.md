@@ -48,24 +48,6 @@ Magento Steps:
 6. Type in your Pay Now Service Key
 7. Click 'Save Config' on the top right
 
-![alt tag](http://magento.gatewaymodules.com/magento_screenshot1.png)
-
-Revision History
-----------------
-
-* 25 Aug 2015/2.0.0 Add support for EFT/Retail payments
-* 11 May 2014/1.0.1 Documentation with callback URL
-* 09 Mar 2014/1.0.0 First version
-
-Tested with Magento version
-
-Demo Site
----------
-
-Below is a Magento demo site with the Sage Pay Now credit card gateway module implemented:
-
-http://magento.gatewaymodules.com
-
 Issues & Feature Requests
 -------------------------
 
