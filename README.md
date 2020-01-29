@@ -45,7 +45,7 @@ A. Netcash Account Configuration Steps:
 
 Netcash Pay Now Callback
 
-6. Choose the following for your Accept, Decline, Notify & Redirect URLs:
+10. Choose the following for your Accept, Decline, Notify & Redirect URLs:
 	> http://magento_installation/index.php/paynow/notify
 
 Magento Steps:
